@@ -14,7 +14,7 @@
 
 	<groupId>com.pTHCi</groupId>
 	<artifactId>Test_Non_Filter_Plugin</artifactId>
-	<version>0.1.0-STABLE_RELEASE</version>
+	<version>0.1.0-SNAPSHOT</version>
 
 	<name>Test_Non_Filter_Plugin</name>
 	<description>Maven ImageJ 1.x plugin. Test_Non_Filter_Plugin</description>

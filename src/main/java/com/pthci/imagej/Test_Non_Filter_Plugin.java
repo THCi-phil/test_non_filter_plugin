@@ -6,13 +6,18 @@
  *     http://creativecommons.org/publicdomain/zero/1.0/
  */
 
-package com.mycompany.imagej;
+package com.pthci.imagej;
 
 import ij.IJ;
 import ij.ImageJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
-import ij.plugin.filter.PlugInFilter;
+//import ij.plugin.filter.PlugInFilter;
+import ij.plugin.*;
+import ij.io.OpenDialog;
+//import ij.io.FileInfo;
+//import ij.io.FileOpener;
+import ij.io.Opener;
 import ij.process.ImageProcessor;
 
 /**
@@ -21,7 +26,7 @@ import ij.process.ImageProcessor;
  *
  * @author Johannes Schindelin
  */
-public class Process_Pixels implements PlugInFilter {
+public class Test_Non_Filter_Plugin implements PlugIn {
 	protected ImagePlus image;
 
 	// image property members
@@ -32,7 +37,7 @@ public class Process_Pixels implements PlugInFilter {
 	public double value;
 	public String name;
 
-	@Override
+/*	@Override
 	public int setup(String arg, ImagePlus imp) {
 		if (arg.equals("about")) {
 			showAbout();
@@ -42,15 +47,38 @@ public class Process_Pixels implements PlugInFilter {
 		image = imp;
 		return DOES_8G | DOES_16 | DOES_32 | DOES_RGB;
 	}
-
+*/
 	@Override
-	public void run(ImageProcessor ip) {
+	public void run(String arg) {
+		OpenDialog od   = new OpenDialog("Open test file", null);
+    String     name = od.getFileName();
+		String     dir  = od.getDirectory();
+		String     path = od.getPath();
+    if ( name == null ) {
+			IJ.log("Open dialog box was cancelled");
+      return;
+    }
+    //FileInfo fi = new FileInfo();
+		//fi.fileName = name;
+    //fi.directory = dir;
+		//       fi.width = 256;
+    //   fi.height = 254;
+    //   fi.offset = 768;
+		//FileOpener fo = new FileOpener(fi);
+    //new FileOpener(fi).open();
+		//image = fo.openImage();
+		
+		Opener oi = new Opener();
+		image = oi.openImage(path);
+		image.show();
+		ImageProcessor ip = image.getStack().getProcessor(1); //stacks start at 1
+		
 		// get width and height
-		width = ip.getWidth();
+		width  = ip.getWidth();
 		height = ip.getHeight();
 
 		if (showDialog()) {
-			process(ip);
+			process(image);
 			image.updateAndDraw();
 		}
 	}
@@ -171,7 +199,7 @@ public class Process_Pixels implements PlugInFilter {
 	public static void main(String[] args) throws Exception {
 		// set the plugins.dir property to make the plugin appear in the Plugins menu
 		// see: https://stackoverflow.com/a/7060464/1207769
-		Class<?> clazz = Process_Pixels.class;
+		Class<?> clazz = Test_Non_Filter_Plugin.class;
 		java.net.URL url = clazz.getProtectionDomain().getCodeSource().getLocation();
 		java.io.File file = new java.io.File(url.toURI());
 		System.setProperty("plugins.dir", file.getAbsolutePath());
@@ -180,8 +208,8 @@ public class Process_Pixels implements PlugInFilter {
 		new ImageJ();
 
 		// open the Clown sample
-		ImagePlus image = IJ.openImage("http://imagej.net/images/clown.jpg");
-		image.show();
+		//ImagePlus image = IJ.openImage("http://imagej.net/images/clown.jpg");
+		//image.show();
 
 		// run the plugin
 		IJ.runPlugIn(clazz.getName(), "");
